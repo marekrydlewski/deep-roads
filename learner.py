@@ -1,4 +1,4 @@
-# import neural
+import neural
 from scipy import ndimage, misc
 import os
 import numpy as np
@@ -42,15 +42,21 @@ def get_data_from_images(img_map, img_sat):
 def learn_directory():
     filenames_map = next(os.walk("test/map/"))[2]
     filenames_sat = next(os.walk("test/sat/"))[2]
-
+    model = neural.get_base_network()
     for map, sat in zip(filenames_map, filenames_sat):
         img_map = load_img("test/map/" + map)
         img_sat = load_img("test/sat/" + sat)
+        print("Test")
+
         x, y = get_data_from_images(img_map, img_sat)
-        # to do
+        print("Test2")
+        model.fit(x,y)
+        print("Test3")
+
 
 if __name__ == "__main__":
     img_map = load_img("test/map/10378780_15.tif")
     img_sat = load_img("test/sat/10378780_15.tiff")
     x, y = get_data_from_images(img_map, img_sat)
+    learn_directory()
     print("Test")
