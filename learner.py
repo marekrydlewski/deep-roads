@@ -40,26 +40,51 @@ def get_data_from_images(img_map, img_sat):
     return (x_train, y_train)
 
 
+def get_random_base_data_from_images(img_map, img_sat):
+    x_roads = []
+    x_no_roads = []
+    for i in range(1000):
+        x = random.randint(11, 589)
+        y = random.randint(11, 589)
+        sat_data = img_sat[x - 9: x + 10, y - 9: y + 10]
+        map_data = img_map[x - 9: x + 10, y - 9: y + 10]
+        if np.sum(map_data > __threshold) >= 1:
+            x_roads.append(sat_data)
+        else:
+            x_no_roads.append(sat_data)
+    min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
+
+    x_roads_np = np.array(x_roads[0:min_len])
+    x_no_roads_np = np.array(x_no_roads[0:min_len])
+    x_train = np.concatenate((x_roads_np, x_no_roads_np))
+
+    y_train = np.zeros((2 * min_len, 2))
+    y_train[0: min_len] = __is_not_road
+    y_train[min_len: 2*min_len] = __is_road
+
+    return (x_train, y_train)
+
+
 def get_specialized_data_from_images(img_map, img_sat):
     x_roads = []
     x_no_roads = []
-    for i in range(1500):
+    for i in range(1000):
         x = random.randint(11, 589)
         y = random.randint(11, 589)
-        x_data = img_map[x - 9: x + 10, y - 9: y + 10]
+        sat_data = img_sat[x - 9: x + 10, y - 9: y + 10]
         if check_road(x, y, img_map):
-            x_roads.append(x_data)
+            x_roads.append(sat_data)
         else:
-            x_no_roads.append(x_data)
-    max_len = len(x_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_no_roads)
+            x_no_roads.append(sat_data)
+    min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
 
-    x_roads_np = np.array(x_roads[0:max_len])
-    x_no_roads_np = np.array(x_no_roads[0:max_len])
+    x_roads_np = np.array(x_roads[0:min_len])
+    x_no_roads_np = np.array(x_no_roads[0:min_len])
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
-    y_train = np.zeros((2 * max_len, 2))
-    y_train[0: max_len] = __is_not_road
-    y_train[max_len: 2*max_len] = __is_road
+    y_train = np.zeros((2 * min_len, 2))
+    y_train[0: min_len] = __is_not_road
+    y_train[min_len: 2*min_len] = __is_road
 
     return (x_train, y_train)
 
@@ -74,7 +99,7 @@ def check_road(x, y, img_mat):
         return False
 
 
-def learn_base_directory():
+def learn_directory_base():
     filenames_map = next(os.walk("train/map/"))[2]
     filenames_sat = next(os.walk("train/sat/"))[2]
     model = neural.get_base_network()
@@ -116,8 +141,9 @@ def learn_directory_specialized():
 
 
 if __name__ == "__main__":
-    #img_map = load_img("pre/10078660_15.tif")
-    #img_sat = load_img("post/10078660_15.tiff")
+    img_map = load_img("train/map/10078660_15.tif")
+    img_sat = load_img("train/sat/10078660_15.tiff")
     #x, y = get_data_from_images(img_map, img_sat)
-    learn_base_directory()
+    x, y = get_random_base_data_from_images(img_map, img_sat)
+    learn_directory_base()
     print("Test")
