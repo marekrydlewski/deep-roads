@@ -1,4 +1,4 @@
-# import neural
+import neural
 from scipy import ndimage, misc
 import os
 import numpy as np
