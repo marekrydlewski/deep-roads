@@ -44,10 +44,10 @@ def get_random_base_data_from_images(img_map, img_sat):
     x_roads = []
     x_no_roads = []
     for i in range(1000):
-        x = random.randint(11, 589)
-        y = random.randint(11, 589)
-        sat_data = img_sat[x - 9: x + 10, y - 9: y + 10]
-        map_data = img_map[x - 9: x + 10, y - 9: y + 10]
+        x = random.randint(10, 589)
+        y = random.randint(10, 589)
+        sat_data = img_sat[x - 9: x + 11, y - 9: y + 11]
+        map_data = img_map[x - 9: x + 11, y - 9: y + 11]
         if np.sum(map_data > __threshold) >= 1:
             x_roads.append(sat_data)
         else:
@@ -69,9 +69,9 @@ def get_specialized_data_from_images(img_map, img_sat):
     x_roads = []
     x_no_roads = []
     for i in range(1000):
-        x = random.randint(11, 589)
-        y = random.randint(11, 589)
-        sat_data = img_sat[x - 9: x + 10, y - 9: y + 10]
+        x = random.randint(10, 589)
+        y = random.randint(10, 589)
+        sat_data = img_sat[x - 9: x + 11, y - 9: y + 11]
         if check_road(x, y, img_map):
             x_roads.append(sat_data)
         else:
@@ -105,14 +105,17 @@ def learn_directory_base():
     model = neural.get_base_network()
 
     licznik = 0
-    for _ in range(3):
+    l = 0
+    for _ in range(13):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             # print(map)
-            x, y = get_data_from_images(img_map, img_sat)
+            print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
+            x, y = get_random_base_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
             # print(map)
+            l += 1
             licznik += 1
             if licznik == 20:
                 licznik = 0
