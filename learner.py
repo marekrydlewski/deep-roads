@@ -40,28 +40,33 @@ def get_data_from_images(img_map, img_sat):
     return (x_train, y_train)
 
 
-def learn_directory():
-    filenames_map = next(os.walk("post/"))[2]
-    filenames_sat = next(os.walk("pre/"))[2]
+def learn_base_directory():
+    filenames_map = next(os.walk("test/map/"))[2]
+    filenames_sat = next(os.walk("test/sat/"))[2]
     model = get_base_network()
 
     licznik = 0
     for _ in range(3):
         for map, sat in zip(filenames_map, filenames_sat):
-            img_map = load_img("post/" + map)
-            img_sat = load_img("pre/" + sat)
-            print(map)
+            img_map = load_img("test/map/" + map)
+            img_sat = load_img("test/sat/" + sat)
+            # print(map)
             x, y = get_data_from_images(img_map, img_sat)
-            dupa = model.fit(x, y, epochs=3)
-            print(map)
+            model.fit(x, y, epochs=1)
+            # print(map)
             licznik += 1
             if licznik == 20:
                 licznik = 0
-                model.save("base_neural.h5")
+                neural.save_base_network(model)
+    neural.save_base_network(model)
+
+
+def learn_directory_specialized():
+    pass
 
 if __name__ == "__main__":
     #img_map = load_img("pre/10078660_15.tif")
     #img_sat = load_img("post/10078660_15.tiff")
     #x, y = get_data_from_images(img_map, img_sat)
-    learn_directory()
+    learn_base_directory()
     print("Test")

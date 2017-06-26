@@ -42,6 +42,10 @@ def get_base_network():
         return model
 
 
+def save_base_network(net):
+    net.save(__modelNameBaseNetwork)
+
+
 # network checking if at least 1px in the centre of a window is a road (2px x 2px)
 def get_specialized_network():
     try:
@@ -72,3 +76,7 @@ def get_specialized_network():
         model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
         return model
+
+
+def save_specialized_network(net):
+    net.save(__modelNameSpecializedNetwork)
