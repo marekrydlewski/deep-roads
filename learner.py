@@ -47,10 +47,9 @@ def learn_directory():
         img_map = load_img("test/map/" + map)
         img_sat = load_img("test/sat/" + sat)
         print("Test")
-
         x, y = get_data_from_images(img_map, img_sat)
         print("Test2")
-        model.fit(x,y)
+        model.fit(x,y, epochs=1)
         print("Test3")
 
 
