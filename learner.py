@@ -26,7 +26,7 @@ def slice_image_with_axis(img, window):
     return windows
 
 
-def get_surroundings(img):
+def get_surroundings(img, x, y):
     return img[x - 9: x + 11, y - 9: y + 11]
 
 
@@ -52,8 +52,8 @@ def get_random_base_data_from_images(img_map, img_sat):
     for i in range(1000):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
-        sat_data = get_surroundings(img_sat)
-        map_data = get_surroundings(img_map)
+        sat_data = get_surroundings(img_sat, x, y)
+        map_data = get_surroundings(img_map, x, y)
         if np.sum(map_data > neural.THRESHOLD) >= 1:
             x_roads.append(sat_data)
         else:
@@ -77,7 +77,7 @@ def get_specialized_data_from_images(img_map, img_sat):
     for i in range(1000):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
-        sat_data = get_surroundings(img_sat)
+        sat_data = get_surroundings(img_sat, x, y)
         if check_road(x, y, img_map):
             x_roads.append(sat_data)
         else:
