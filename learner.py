@@ -134,19 +134,20 @@ def learn_directory_specialized():
     filenames_map = next(os.walk("train/map/"))[2]
     filenames_sat = next(os.walk("train/sat/"))[2]
     model = neural.get_specialized_network()
+    l = 0
     licznik = 0
     for _ in range(45):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
-            # print(map)
+            print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
             x, y = get_specialized_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
-            # print(map)
             licznik += 1
             if licznik == 20:
                 licznik = 0
                 neural.save_specialized_network(model)
+        l = 0
     neural.save_specialized_network(model)
 
 
