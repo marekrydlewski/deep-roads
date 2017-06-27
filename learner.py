@@ -4,38 +4,44 @@ import os
 import numpy as np
 import random
 
-__threshold = 120
-__is_road = np.array([1, 0])
-__is_not_road = np.array([0, 1])
-__windowsize_r = 20
-__windowsize_c = 20
-
 
 def load_img(name):
     img = ndimage.imread(name)
     return misc.imresize(img, size=(600, 600))
 
 
-def slice_image(img):
+def slice_image(img, window):
     windows = []
-    for r in range(0, img.shape[0] - __windowsize_r, __windowsize_r):
-        for c in range(0, img.shape[1] - __windowsize_c, __windowsize_c):
-            windows.append(img[r:r + __windowsize_r, c:c + __windowsize_c])
+    for r in range(0, img.shape[0] - window, window):
+        for c in range(0, img.shape[1] - window, window):
+            windows.append(img[r:r + window, c:c + window])
     return windows
 
 
+def slice_image_with_axis(img, window):
+    windows = []
+    for r in range(0, img.shape[0] - window, window):
+        for c in range(0, img.shape[1] - window, window):
+            windows.append((img[r:r + window, c:c + window], r, c))
+    return windows
+
+
+def get_surroundings(img):
+    return img[x - 9: x + 11, y - 9: y + 11]
+
+
 def get_data_from_images(img_map, img_sat):
-    slices_map = slice_image(img_map)
-    slices_sat = slice_image(img_sat)
+    slices_map = slice_image(img_map, neural.WINDOW)
+    slices_sat = slice_image(img_sat, neural.WINDOW)
     x_train = np.zeros((len(slices_map), 20, 20, 3))
     y_train = np.zeros((len(slices_sat), 2))
 
     for i, (slice_map, slice_sat) in enumerate(zip(slices_map, slices_sat)):
-        if np.sum(slice_map >__threshold) >= 1:
-            y_train[i] = __is_road
+        if np.sum(slice_map >neural.THRESHOLD) >= 1:
+            y_train[i] = neural.IS_ROAD
             x_train[i] = slice_sat
         else:
-            y_train[i] = __is_not_road
+            y_train[i] = neural.IS_NOT_ROAD
             x_train[i] = slice_sat
     return (x_train, y_train)
 
@@ -48,7 +54,7 @@ def get_random_base_data_from_images(img_map, img_sat):
         y = random.randint(10, 589)
         sat_data = img_sat[x - 9: x + 11, y - 9: y + 11]
         map_data = img_map[x - 9: x + 11, y - 9: y + 11]
-        if np.sum(map_data > __threshold) >= 1:
+        if np.sum(map_data > neural.THRESHOLD) >= 1:
             x_roads.append(sat_data)
         else:
             x_no_roads.append(sat_data)
@@ -59,8 +65,8 @@ def get_random_base_data_from_images(img_map, img_sat):
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
     y_train = np.zeros((2 * min_len, 2))
-    y_train[0: min_len] = __is_road
-    y_train[min_len: 2*min_len] = __is_not_road
+    y_train[0: min_len] = neural.IS_ROAD
+    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
 
     return (x_train, y_train)
 
@@ -83,17 +89,17 @@ def get_specialized_data_from_images(img_map, img_sat):
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
     y_train = np.zeros((2 * min_len, 2))
-    y_train[0: min_len] = __is_not_road
-    y_train[min_len: 2*min_len] = __is_road
+    y_train[0: min_len] = neural.IS_NOT_ROAD
+    y_train[min_len: 2*min_len] = neural.IS_ROAD
 
     return (x_train, y_train)
 
 
 def check_road(x, y, img_mat):
-    if img_mat[x][y] >= __threshold or \
-                    img_mat[x][y + 1] >= __threshold or \
-                    img_mat[x + 1][y] >= __threshold or \
-                    img_mat[x + 1][y + 1] >= __threshold:
+    if img_mat[x][y] >= neural.THRESHOLD or \
+                    img_mat[x][y + 1] >= neural.THRESHOLD or \
+                    img_mat[x + 1][y] >= neural.THRESHOLD or \
+                    img_mat[x + 1][y + 1] >= neural.THRESHOLD:
         return True
     else:
         return False
