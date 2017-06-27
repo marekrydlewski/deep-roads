@@ -27,17 +27,18 @@ def get_base_network():
         model = Sequential()
         model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
         model.add(Dropout(0.2))
-        model.add(Conv2D(26, (3, 3), activation='relu', padding='same', kernel_constraint=maxnorm(3)))
+        model.add(Conv2D(32, (3, 3), activation='relu', padding='valid', kernel_constraint=maxnorm(3)))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Conv2D(64, (3, 3), activation='relu', padding='valid'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Flatten())
+        model.add(Dropout(0.2))
         model.add(Dense(256, activation='relu', kernel_constraint=maxnorm(3)))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.2))
+        model.add(Dense(64, activation='relu', kernel_constraint=maxnorm(3)))
         model.add(Dense(2, activation='softmax'))
 
         # Compile model
-        # decay = __lrate / __epochs
-        # sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
-        sgd = SGD(lr=0.03)
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         return model
@@ -74,7 +75,7 @@ def get_specialized_network():
         # Compile model
         # decay = __lrate / __epochs
         # sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
-        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 
         return model
 
