@@ -52,8 +52,8 @@ def get_random_base_data_from_images(img_map, img_sat):
     for i in range(1000):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
-        sat_data = img_sat[x - 9: x + 11, y - 9: y + 11]
-        map_data = img_map[x - 9: x + 11, y - 9: y + 11]
+        sat_data = get_surroundings(img_sat)
+        map_data = get_surroundings(img_map)
         if np.sum(map_data > neural.THRESHOLD) >= 1:
             x_roads.append(sat_data)
         else:
@@ -77,7 +77,7 @@ def get_specialized_data_from_images(img_map, img_sat):
     for i in range(1000):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
-        sat_data = img_sat[x - 9: x + 11, y - 9: y + 11]
+        sat_data = get_surroundings(img_sat)
         if check_road(x, y, img_map):
             x_roads.append(sat_data)
         else:
