@@ -89,8 +89,8 @@ def get_specialized_data_from_images(img_map, img_sat):
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
     y_train = np.zeros((2 * min_len, 2))
-    y_train[0: min_len] = neural.IS_NOT_ROAD
-    y_train[min_len: 2*min_len] = neural.IS_ROAD
+    y_train[0: min_len] = neural.IS_ROAD
+    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
 
     return (x_train, y_train)
 
@@ -110,7 +110,7 @@ def learn_directory_base():
     filenames_sat = next(os.walk("train/sat/"))[2]
     model = neural.get_base_network()
 
-    licznik = 0
+    counter = 0
     l = 0
     for _ in range(45):
         for map, sat in zip(filenames_map, filenames_sat):
@@ -122,9 +122,9 @@ def learn_directory_base():
             model.fit(x, y, epochs=1)
             # print(map)
             l += 1
-            licznik += 1
-            if licznik == 20:
-                licznik = 0
+            counter += 1
+            if counter == 50:
+                counter = 0
                 neural.save_base_network(model)
         l = 0
     neural.save_base_network(model)
@@ -135,7 +135,7 @@ def learn_directory_specialized():
     filenames_sat = next(os.walk("train/sat/"))[2]
     model = neural.get_specialized_network()
     l = 0
-    licznik = 0
+    counter = 0
     for _ in range(32):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
@@ -143,9 +143,9 @@ def learn_directory_specialized():
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
             x, y = get_specialized_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
-            licznik += 1
-            if licznik == 20:
-                licznik = 0
+            counter += 1
+            if counter == 50:
+                counter = 0
                 neural.save_specialized_network(model)
         l = 0
     neural.save_specialized_network(model)
@@ -171,5 +171,6 @@ if __name__ == "__main__":
     # x, y = get_data_from_images(img_map, img_sat)
     # x, y = get_random_base_data_from_images(img_map, img_sat)
     # learn_directory_base()
-    test_valid_directory()
+    learn_directory_specialized()
+    # test_valid_directory()
     print("Test")
