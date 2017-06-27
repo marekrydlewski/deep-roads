@@ -58,7 +58,7 @@ def get_specialized_network():
         print('Create new model of specialized network')
 
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), input_shape=(3, __windowSize, __windowSize), activation='relu', padding='same'))
+        model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), activation='relu', padding='same'))
         model.add(Dropout(0.2))
         model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -75,9 +75,7 @@ def get_specialized_network():
         model.add(Dense(2, activation='softmax'))
 
         # Compile model
-        # decay = __lrate / __epochs
-        # sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
-        model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         return model
 
