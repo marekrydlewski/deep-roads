@@ -84,6 +84,17 @@ def get_specialized_data_from_images(img_map, img_sat):
             x_no_roads.append(sat_data)
     min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
 
+    if min_len == 0:
+        print("ojoj")
+        if len(x_no_roads) >= 1:
+            x_train = np.array([x_no_roads[0]])
+            y_train = np.array([neural.IS_NOT_ROAD])
+            return x_train, y_train
+        else:
+            x_train = np.array([x_roads[0]])
+            y_train = np.array([neural.IS_ROAD])
+            return x_train, y_train
+
     x_roads_np = np.array(x_roads[0:min_len])
     x_no_roads_np = np.array(x_no_roads[0:min_len])
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
@@ -143,6 +154,7 @@ def learn_directory_specialized():
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
             x, y = get_specialized_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
+            l += 1
             counter += 1
             if counter == 40:
                 counter = 0
