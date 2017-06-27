@@ -136,7 +136,7 @@ def learn_directory_specialized():
     model = neural.get_specialized_network()
     l = 0
     licznik = 0
-    for _ in range(45):
+    for _ in range(32):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
@@ -149,6 +149,18 @@ def learn_directory_specialized():
                 neural.save_specialized_network(model)
         l = 0
     neural.save_specialized_network(model)
+
+
+def test_valid_directory():
+    filenames_map = next(os.walk("valid/map/"))[2]
+    filenames_sat = next(os.walk("valid/sat/"))[2]
+    model = neural.get_base_network()
+
+    for map, sat in zip(filenames_map, filenames_sat):
+        img_map = load_img("train/map/" + map)
+        img_sat = load_img("train/sat/" + sat)
+        x, y = get_random_base_data_from_images(img_map, img_sat)
+
 
 
 if __name__ == "__main__":
