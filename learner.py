@@ -157,16 +157,19 @@ def test_valid_directory():
     model = neural.get_base_network()
 
     for map, sat in zip(filenames_map, filenames_sat):
-        img_map = load_img("train/map/" + map)
-        img_sat = load_img("train/sat/" + sat)
+        img_map = load_img("valid/map/" + map)
+        img_sat = load_img("valid/sat/" + sat)
         x, y = get_random_base_data_from_images(img_map, img_sat)
-
+        score = model.evaluate(x, y)
+        print('Test loss:', score[0])
+        print('Test accuracy:', score[1])
 
 
 if __name__ == "__main__":
-    img_map = load_img("train/map/10078660_15.tif")
-    img_sat = load_img("train/sat/10078660_15.tiff")
-    #x, y = get_data_from_images(img_map, img_sat)
-    x, y = get_random_base_data_from_images(img_map, img_sat)
-    learn_directory_base()
+    # img_map = load_img("train/map/10078660_15.tif")
+    # img_sat = load_img("train/sat/10078660_15.tiff")
+    # x, y = get_data_from_images(img_map, img_sat)
+    # x, y = get_random_base_data_from_images(img_map, img_sat)
+    # learn_directory_base()
+    test_valid_directory()
     print("Test")
