@@ -59,8 +59,8 @@ def get_random_base_data_from_images(img_map, img_sat):
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
     y_train = np.zeros((2 * min_len, 2))
-    y_train[0: min_len] = __is_not_road
-    y_train[min_len: 2*min_len] = __is_road
+    y_train[0: min_len] = __is_road
+    y_train[min_len: 2*min_len] = __is_not_road
 
     return (x_train, y_train)
 
@@ -106,7 +106,7 @@ def learn_directory_base():
 
     licznik = 0
     l = 0
-    for _ in range(13):
+    for _ in range(45):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
@@ -120,6 +120,7 @@ def learn_directory_base():
             if licznik == 20:
                 licznik = 0
                 neural.save_base_network(model)
+        l = 0
     neural.save_base_network(model)
 
 
@@ -128,7 +129,7 @@ def learn_directory_specialized():
     filenames_sat = next(os.walk("train/sat/"))[2]
     model = neural.get_specialized_network()
     licznik = 0
-    for _ in range(3):
+    for _ in range(45):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
