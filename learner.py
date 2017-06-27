@@ -123,7 +123,7 @@ def learn_directory_base():
             # print(map)
             l += 1
             counter += 1
-            if counter == 50:
+            if counter == 40:
                 counter = 0
                 neural.save_base_network(model)
         l = 0
@@ -136,7 +136,7 @@ def learn_directory_specialized():
     model = neural.get_specialized_network()
     l = 0
     counter = 0
-    for _ in range(32):
+    for _ in range(256):
         for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
@@ -144,7 +144,7 @@ def learn_directory_specialized():
             x, y = get_specialized_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
             counter += 1
-            if counter == 50:
+            if counter == 40:
                 counter = 0
                 neural.save_specialized_network(model)
         l = 0

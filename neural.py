@@ -11,13 +11,14 @@ from keras.utils import np_utils
 from keras import backend as K
 
 __modelNameBaseNetwork = "base_neural.h5"
-__modelNameSpecializedNetwork = "base_neural.h5"
+__modelNameSpecializedNetwork = "specialized_neural.h5"
 __windowSize = 20
 
 IS_ROAD = np.array([1, 0])
 IS_NOT_ROAD = np.array([0, 1])
 THRESHOLD = 120
 WINDOW = 20
+
 
 # network checking if at least 1px in a window is a road
 def get_base_network():
