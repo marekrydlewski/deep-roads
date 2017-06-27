@@ -4,7 +4,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
-from keras.optimizers import SGD
+from keras.optimizers import SGD,adam
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
 from keras.utils import np_utils
@@ -35,9 +35,10 @@ def get_base_network():
         model.add(Dense(2, activation='softmax'))
 
         # Compile model
-        decay = __lrate / __epochs
-        sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
-        model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+        # decay = __lrate / __epochs
+        # sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
+        sgd = SGD(lr=0.03)
+        model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
         return model
 
@@ -71,9 +72,9 @@ def get_specialized_network():
         model.add(Dense(2, activation='softmax'))
 
         # Compile model
-        decay = __lrate / __epochs
-        sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
-        model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+        # decay = __lrate / __epochs
+        # sgd = SGD(lr=__lrate, momentum=0.9, decay=decay, nesterov=False)
+        model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
         return model
 
