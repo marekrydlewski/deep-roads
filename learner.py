@@ -27,6 +27,12 @@ def slice_image_with_axis(img, window):
 
 
 def get_surroundings(img, x, y):
+    if x < 9 or x > 589 or y < 9 or x > 589:
+        npad = ((11, 11), (11, 11), (0, 0))
+        img_pad = np.pad(img, pad_width=npad, mode="symmetric")
+        x = img[x - 9 + 11: x + 11 + 11, y - 9 + 11: y + 11 + 11]
+        return x
+
     return img[x - 9: x + 11, y - 9: y + 11]
 
 
@@ -78,20 +84,23 @@ def get_specialized_data_from_images(img_map, img_sat):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
         map_data = get_surroundings(img_map, x, y)
-        # sat_data = get_surroundings(img_sat, x, y)
-        # if check_road(x, y, img_map):
-        #     x_roads.append(sat_data)
-        # else:
-        #     x_no_roads.append(sat_data)
+        sat_data = get_surroundings(img_sat, x, y)
 
-        if np.sum(map_data > neural.THRESHOLD) >= 1:
-            for xx in range(x - 9, x + 11, 2):
-                for yy in range(y - 9, y + 11, 2):
-                    # lustrooooooooooooooooo
-                    if check_road(xx, yy, img_map):
-                        x_roads.append(get_surroundings(img_sat, xx, yy))
-                    else:
-                        x_no_roads.append(get_surroundings(img_sat, xx, yy))
+
+        ###############
+        if check_road(x, y, img_map):
+            x_roads.append(sat_data)
+        else:
+            x_no_roads.append(sat_data)
+
+        # if np.sum(map_data > neural.THRESHOLD) >= 1:
+        #     for xx in range(x - 9, x + 11, 2):
+        #         for yy in range(y - 9, y + 11, 2):
+        #             # lustrooooooooooooooooo
+        #             if check_road(xx, yy, img_map):
+        #                 x_roads.append(get_surroundings(img_sat, xx, yy))
+        #             else:
+        #                 x_no_roads.append(get_surroundings(img_sat, xx, yy))
     min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
 
     if min_len == 0:
@@ -105,11 +114,8 @@ def get_specialized_data_from_images(img_map, img_sat):
             y_train = np.array([neural.IS_ROAD])
             return x_train, y_train
 
-    print(min_len)
     x_roads_np = np.array(x_roads[0:min_len])
     x_no_roads_np = np.array(x_no_roads[0:min_len])
-    print(x_roads_np.shape)
-    print(x_no_roads_np.shape)
     x_train = np.concatenate((x_roads_np, x_no_roads_np))
 
     y_train = np.zeros((2 * min_len, 2))
@@ -195,7 +201,7 @@ if __name__ == "__main__":
     # img_sat = load_img("train/sat/10078660_15.tiff")
     # x, y = get_data_from_images(img_map, img_sat)
     # x, y = get_random_base_data_from_images(img_map, img_sat)
-    learn_directory_base()
-    # learn_directory_specialized()
+    # learn_directory_base()
+    learn_directory_specialized()
     # test_valid_directory()
     print("Test")
