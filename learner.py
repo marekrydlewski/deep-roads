@@ -78,10 +78,14 @@ def get_specialized_data_from_images(img_map, img_sat):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
         sat_data = get_surroundings(img_sat, x, y)
-        if check_road(x, y, img_map):
-            x_roads.append(sat_data)
-        else:
-            x_no_roads.append(sat_data)
+        map_data = get_surroundings(img_map, x, y)
+        if np.sum(map_data > neural.THRESHOLD) >= 1:
+            for xx in range(x, x + 20, 2):
+                for yy in range(y, y + 20, 2):
+                    if check_road(xx, yy, img_map):
+                        x_roads.append(get_surroundings(img_sat, xx, yy))
+                    else:
+                        x_no_roads.append(get_surroundings(img_sat, xx, yy))
     min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
 
     if min_len == 0:
