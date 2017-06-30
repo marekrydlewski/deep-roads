@@ -35,6 +35,10 @@ def get_surroundings_with_pad(img, x, y):
     return img[x - 9 + 11: x + 11 + 11, y - 9 + 11: y + 11 + 11]
 
 
+def get_surroundings_with_small_pad(img, x, y):
+    return img[x - 6 + 11: x + 8 + 11, y - 6 + 11: y + 8 + 11]
+
+
 def get_data_from_images(img_map, img_sat):
     slices_map = slice_image(img_map, neural.WINDOW)
     slices_sat = slice_image(img_sat, neural.WINDOW)
@@ -128,6 +132,39 @@ def get_specialized_data_from_images(img_map, img_sat):
     return shuffle(x_train, y_train)
 
 
+def get_specialized_small_data_from_images(img_map, img_sat):
+    x_roads = []
+    x_no_roads = []
+
+    npad = ((11, 11), (11, 11), (0, 0))
+    img_sat_pad = np.pad(img_sat, pad_width=npad, mode="symmetric")
+    for i in range(500):
+        x = random.randint(10, 589)
+        y = random.randint(10, 589)
+        map_data = get_surroundings(img_map, x, y)
+        sat_data = get_surroundings(img_sat, x, y)
+
+        if np.sum(map_data > neural.THRESHOLD) >= 1:
+            for xx in range(x - 9, x + 11, 2):
+                for yy in range(y - 9, y + 11, 2):
+                    # lustrooooooooooooooooo
+                    if check_road(xx, yy, img_map):
+                        x_roads.append(get_surroundings_with_small_pad(img_sat_pad, xx, yy))
+                    else:
+                        x_no_roads.append(get_surroundings_with_small_pad(img_sat_pad, xx, yy))
+    min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
+
+    x_roads_np = np.array(x_roads[0:min_len])
+    x_no_roads_np = np.array(x_no_roads[0:min_len])
+    x_train = np.concatenate((x_roads_np, x_no_roads_np))
+
+    y_train = np.zeros((2 * min_len, 2))
+    y_train[0: min_len] = neural.IS_ROAD
+    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
+
+    return shuffle(x_train, y_train)
+
+
 def check_road(x, y, img_mat):
     if img_mat[x][y] >= neural.THRESHOLD or \
                     img_mat[x][y + 1] >= neural.THRESHOLD or \
@@ -152,7 +189,7 @@ def learn_directory_base():
             img_sat = load_img("train/sat/" + sat)
             # print(map)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
-            x, y = get_data_from_images(img_map, img_sat)
+            x, y = get_random_base_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
             # print(map)
             l += 1
@@ -177,7 +214,10 @@ def learn_directory_specialized():
             img_sat = load_img("train/sat/" + sat)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
             x, y = get_specialized_data_from_images(img_map, img_sat)
-            model.fit(x, y, epochs=1)
+            if len(x) != 0:
+                model.fit(x, y, epochs=1)
+            else:
+                print("Empty data for fit")
             l += 1
             counter += 1
             if counter == 40:
@@ -206,7 +246,7 @@ if __name__ == "__main__":
     # img_sat = load_img("train/sat/10078660_15.tiff")
     # x, y = get_data_from_images(img_map, img_sat)
     # x, y = get_random_base_data_from_images(img_map, img_sat)
-    learn_directory_base()
-    # learn_directory_specialized()
+    # learn_directory_base()
+    learn_directory_specialized()
     # test_valid_directory()
     print("Test")
