@@ -139,14 +139,15 @@ def check_road(x, y, img_mat):
 
 
 def learn_directory_base():
-    filenames_map = next(os.walk("train/map/"))[2]
-    filenames_sat = next(os.walk("train/sat/"))[2]
+    filenames_map = np.array(next(os.walk("train/map/"))[2])
+    filenames_sat = np.array(next(os.walk("train/sat/"))[2])
+    filenames_map, filenames_sat = shuffle(filenames_map, filenames_sat)
     model = neural.get_base_network()
 
     counter = 0
     l = 0
     for _ in range(45):
-        for map, sat in zip(shuffle(filenames_map, filenames_sat)):
+        for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             # print(map)
@@ -164,13 +165,14 @@ def learn_directory_base():
 
 
 def learn_directory_specialized():
-    filenames_map = next(os.walk("train/map/"))[2]
-    filenames_sat = next(os.walk("train/sat/"))[2]
+    filenames_map = np.array(next(os.walk("train/map/"))[2])
+    filenames_sat = np.array(next(os.walk("train/sat/"))[2])
+    filenames_map, filenames_sat = shuffle(filenames_map, filenames_sat)
     model = neural.get_specialized_network()
     l = 0
     counter = 0
     for _ in range(256):
-        for map, sat in zip(shuffle(filenames_map, filenames_sat)):
+        for map, sat in zip(filenames_map, filenames_sat):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
