@@ -138,7 +138,7 @@ def get_specialized_small_data_from_images(img_map, img_sat):
 
     npad = ((11, 11), (11, 11), (0, 0))
     img_sat_pad = np.pad(img_sat, pad_width=npad, mode="symmetric")
-    for i in range(500):
+    for i in range(200):
         x = random.randint(10, 589)
         y = random.randint(10, 589)
         map_data = get_surroundings(img_map, x, y)
@@ -147,8 +147,7 @@ def get_specialized_small_data_from_images(img_map, img_sat):
         if np.sum(map_data > neural.THRESHOLD) >= 1:
             for xx in range(x - 9, x + 11, 2):
                 for yy in range(y - 9, y + 11, 2):
-                    # lustrooooooooooooooooo
-                    if check_road(xx, yy, img_map):
+                    if check_road_one_px(xx, yy, img_map):
                         x_roads.append(get_surroundings_with_small_pad(img_sat_pad, xx, yy))
                     else:
                         x_no_roads.append(get_surroundings_with_small_pad(img_sat_pad, xx, yy))
@@ -170,6 +169,13 @@ def check_road(x, y, img_mat):
                     img_mat[x][y + 1] >= neural.THRESHOLD or \
                     img_mat[x + 1][y] >= neural.THRESHOLD or \
                     img_mat[x + 1][y + 1] >= neural.THRESHOLD:
+        return True
+    else:
+        return False
+
+
+def check_road_one_px(x, y, img_mat):
+    if img_mat[x][y] >= neural.THRESHOLD:
         return True
     else:
         return False
@@ -205,7 +211,7 @@ def learn_directory_specialized():
     filenames_map = np.array(next(os.walk("train/map/"))[2])
     filenames_sat = np.array(next(os.walk("train/sat/"))[2])
     filenames_map, filenames_sat = shuffle(filenames_map, filenames_sat)
-    model = neural.get_specialized_network()
+    model = neural.get_specialized_small_network()
     l = 0
     counter = 0
     for _ in range(256):
@@ -213,7 +219,7 @@ def learn_directory_specialized():
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
-            x, y = get_specialized_data_from_images(img_map, img_sat)
+            x, y = get_specialized_small_data_from_images(img_map, img_sat)
             if len(x) != 0:
                 model.fit(x, y, epochs=1)
             else:
@@ -224,7 +230,7 @@ def learn_directory_specialized():
                 counter = 0
                 neural.save_specialized_network(model)
         l = 0
-    neural.save_specialized_network(model)
+    neural.save_specialized_small_network(model)
 
 
 def test_valid_directory():

@@ -87,7 +87,7 @@ def save_specialized_network(net):
 # network checking if at least 1px in the centre of a window is a road (2px x 2px)
 def get_specialized_small_network():
     try:
-        return load_model(__modelNameSpecializedNetwork)
+        return load_model(__modelNameSpecializedSmallNetwork)
     except:
         print('Create new model of specialized network')
 
