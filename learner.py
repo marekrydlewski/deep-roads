@@ -49,7 +49,7 @@ def get_data_from_images(img_map, img_sat):
             y_train[i] = neural.IS_NOT_ROAD
             x_train[i] = slice_sat
 
-    return shuffle(x_train, y_train, random_state=0)
+    return shuffle(x_train, y_train)
 
 
 def get_random_base_data_from_images(img_map, img_sat):
@@ -74,7 +74,7 @@ def get_random_base_data_from_images(img_map, img_sat):
     y_train[0: min_len] = neural.IS_ROAD
     y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
 
-    return shuffle(x_train, y_train, random_state=0)
+    return shuffle(x_train, y_train)
 
 
 def get_specialized_data_from_images(img_map, img_sat):
@@ -125,7 +125,7 @@ def get_specialized_data_from_images(img_map, img_sat):
     y_train[0: min_len] = neural.IS_ROAD
     y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
 
-    return shuffle(x_train, y_train, random_state=0)
+    return shuffle(x_train, y_train)
 
 
 def check_road(x, y, img_mat):
@@ -146,7 +146,7 @@ def learn_directory_base():
     counter = 0
     l = 0
     for _ in range(45):
-        for map, sat in zip(filenames_map, filenames_sat):
+        for map, sat in zip(shuffle(filenames_map, filenames_sat)):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             # print(map)
@@ -170,7 +170,7 @@ def learn_directory_specialized():
     l = 0
     counter = 0
     for _ in range(256):
-        for map, sat in zip(filenames_map, filenames_sat):
+        for map, sat in zip(shuffle(filenames_map, filenames_sat)):
             img_map = load_img("train/map/" + map)
             img_sat = load_img("train/sat/" + sat)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
