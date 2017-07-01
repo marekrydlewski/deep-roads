@@ -228,7 +228,7 @@ def learn_directory_specialized():
             counter += 1
             if counter == 40:
                 counter = 0
-                neural.save_specialized_network(model)
+                neural.save_specialized_small_network(model)
         l = 0
     neural.save_specialized_small_network(model)
 
