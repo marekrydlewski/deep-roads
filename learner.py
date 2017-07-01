@@ -27,6 +27,22 @@ def slice_image_with_axis(img, window):
     return windows
 
 
+def slice_image_with_axis_sep(img, window):
+    windows = []
+    rl = []
+    ll = []
+    for r in range(0, img.shape[0], window):
+        for c in range(0, img.shape[1], window):
+            windows.append(img[r:r + window, c:c + window])
+            rl.append(r)
+            ll.append(c)
+
+    windows = np.array(windows)
+    rl = np.array(rl)
+    ll = np.array(ll)
+    return windows, rl, ll
+
+
 def get_surroundings(img, x, y):
     return img[x - 9: x + 11, y - 9: y + 11]
 
