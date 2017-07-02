@@ -6,8 +6,7 @@ from skimage import morphology
 import neural
 import learner
 
-#
-# def roads(image):
+# def roads2(image):
 #     model_base = neural.get_base_network()
 #     model_specs = neural.get_specialized_small_network()
 #
@@ -23,14 +22,14 @@ import learner
 #         prediction = model_base.predict(np.array(slice_list))
 #         prediction = prediction[0]
 #         # print(prediction)
-#         if prediction[1] > prediction[0]:   # is a road, see neural constants
+#         if prediction[0] > prediction[1] and prediction[0] >= 0.65:   # is a road, see neural constants
 #             mini_slices = learner.slice_image_with_axis(slice_sat, 1)
 #             for _, xx, yy in mini_slices:
 #                 mini_list = []
 #                 mini_list.append(learner.get_surroundings_with_small_pad(img_sat_pad, x + xx, y + yy))
 #                 mini_prediction = model_specs.predict(np.array(mini_list))
 #                 mini_prediction = mini_prediction[0]
-#                 if mini_prediction[0] > mini_prediction[1]:   # 1x1 is a road
+#                 if mini_prediction[0] > mini_prediction[1] and prediction[0] >= 0.7:   # 1x1 is a road
 #                     result[x + xx, y + yy] = 255
 #                 else:
 #                     pass
@@ -81,9 +80,10 @@ def roads(image):
     # result = morphology.binary_erosion(result, morphology.diamond(1)).astype(np.uint8)
     # result = morphology.binary_opening(result, selem=np.ones((3, 3)))
     # result = morphology.remove_small_objects(result, min_size=64, connectivity=2)
-    # result = morphology.binary_opening(result, selem=morphology.diamond(1))
-    # result = morphology.binary_erosion(result, morphology.square(2)).astype(np.uint8)
-    # result = morphology.binary_opening(result, selem=morphology.diamond(1))
+    # result = morphology.binary_opening(result, selem=morphology.diamond(2))
+    result = morphology.binary_erosion(result, morphology.diamond(1)).astype(np.uint8)
+    result = morphology.binary_opening(result, selem=morphology.square(2))
+    # result = morphology.binary_erosion(result, morphology.diamond(1)).astype(np.uint8)
 
     # result = morphology.dilation(result, morphology.diamond(1)).astype(np.uint8)
     # result = morphology.remove_small_objects(result, min_size=20, connectivity=1)
@@ -92,13 +92,13 @@ def roads(image):
 
 
 if __name__ == "__main__":
-    # train
-    # img_map = learner.load_img("train/map/10078660_15.tif")
-    # img_sat = learner.load_img("train/sat/10078660_15.tiff")
+    # strain
+    img_map = learner.load_img("train/map/10078660_15.tif")
+    img_sat = learner.load_img("train/sat/10078660_15.tiff")
 
     # test
-    img_map = learner.load_img("test/map/24479215_15.tif")
-    img_sat = learner.load_img("test/sat/24479215_15.tiff")
+    img_map = learner.load_img("test/map/15928855_15.tif")
+    img_sat = learner.load_img("test/sat/15928855_15.tiff")
 
     output = roads(img_sat)
 

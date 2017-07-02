@@ -250,13 +250,13 @@ def learn_directory_specialized():
 
 
 def test_valid_directory():
-    filenames_map = next(os.walk("valid/map/"))[2]
-    filenames_sat = next(os.walk("valid/sat/"))[2]
+    filenames_map = next(os.walk("test/map/"))[2]
+    filenames_sat = next(os.walk("test/sat/"))[2]
     model = neural.get_base_network()
 
     for map, sat in zip(filenames_map, filenames_sat):
-        img_map = load_img("valid/map/" + map)
-        img_sat = load_img("valid/sat/" + sat)
+        img_map = load_img("test/map/" + map)
+        img_sat = load_img("test/sat/" + sat)
         x, y = get_random_base_data_from_images(img_map, img_sat)
         score = model.evaluate(x, y)
         print('Test loss:', score[0])
@@ -270,5 +270,5 @@ if __name__ == "__main__":
     # x, y = get_random_base_data_from_images(img_map, img_sat)
     learn_directory_base()
     # learn_directory_specialized()
-    # test_valid_directory()
+    test_valid_directory()
     print("Test")
