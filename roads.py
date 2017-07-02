@@ -1,7 +1,8 @@
 from scipy import ndimage, misc
 import numpy as np
 import matplotlib.pyplot as plt
-
+from keras.utils import plot_model
+from skimage import morphology
 import neural
 import learner
 
@@ -76,14 +77,30 @@ def roads(image):
     for x_px, y_px in coords_list:
         result[x_px, y_px] = 255
 
+    # result = morphology.binary_erosion(result, morphology.diamond(1)).astype(np.uint8)
+    # result = morphology.binary_erosion(result, morphology.diamond(1)).astype(np.uint8)
+    # result = morphology.binary_opening(result, selem=np.ones((3, 3)))
+    # result = morphology.remove_small_objects(result, min_size=64, connectivity=2)
+    # result = morphology.binary_opening(result, selem=morphology.diamond(1))
+    # result = morphology.binary_erosion(result, morphology.square(2)).astype(np.uint8)
+    # result = morphology.binary_opening(result, selem=morphology.diamond(1))
+
+    # result = morphology.dilation(result, morphology.diamond(1)).astype(np.uint8)
+    # result = morphology.remove_small_objects(result, min_size=20, connectivity=1)
+
     return misc.imresize(result, size=(1500, 1500))
 
 
 if __name__ == "__main__":
-    img_map = learner.load_img("train/map/10078660_15.tif")
-    img_sat = learner.load_img("train/sat/10078660_15.tiff")
+    # train
+    # img_map = learner.load_img("train/map/10078660_15.tif")
+    # img_sat = learner.load_img("train/sat/10078660_15.tiff")
+
+    # test
+    img_map = learner.load_img("test/map/24479215_15.tif")
+    img_sat = learner.load_img("test/sat/24479215_15.tiff")
+
     output = roads(img_sat)
-    #output = np.full((600, 600), 1, dtype=np.uint8)
 
     plt.figure(1)
     plt.imshow(img_map)
@@ -92,3 +109,13 @@ if __name__ == "__main__":
     plt.figure(3)
     plt.imshow(output)
     plt.show()
+
+    # model_base = neural.get_base_network()
+    # model_specs = neural.get_specialized_small_network()
+    #
+    # plot_model(model_base, to_file='model_base.png', show_shapes=True)
+    # plot_model(model_specs, to_file='model_specs.png', show_shapes=True)
+    #
+    # #
+    # print(model_base.summary())
+    # print(model_specs.summary())
