@@ -30,7 +30,8 @@ def get_base_network():
         print('Create new model of base network')
 
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
+        model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), padding='same', activation='relu',
+                         kernel_constraint=maxnorm(3)))
         model.add(Dropout(0.2))
         model.add(Conv2D(32, (3, 3), activation='relu', padding='valid', kernel_constraint=maxnorm(3)))
         model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -61,7 +62,8 @@ def get_specialized_network():
         print('Create new model of specialized network')
 
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
+        model.add(Conv2D(32, (3, 3), input_shape=(__windowSize, __windowSize, 3), padding='same', activation='relu',
+                         kernel_constraint=maxnorm(3)))
         model.add(Dropout(0.2))
         model.add(Conv2D(32, (3, 3), activation='relu', padding='valid', kernel_constraint=maxnorm(3)))
         model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -92,7 +94,9 @@ def get_specialized_small_network():
         print('Create new model of specialized network')
 
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), input_shape=(__windowSizeSmall, __windowSizeSmall, 3), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
+        model.add(
+            Conv2D(32, (3, 3), input_shape=(__windowSizeSmall, __windowSizeSmall, 3), padding='same', activation='relu',
+                   kernel_constraint=maxnorm(3)))
         model.add(Dropout(0.2))
         model.add(Conv2D(32, (3, 3), activation='relu', padding='valid', kernel_constraint=maxnorm(3)))
         model.add(MaxPooling2D(pool_size=(2, 2)))
