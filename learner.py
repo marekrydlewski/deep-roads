@@ -211,7 +211,8 @@ def learn_directory_base():
             img_sat = load_img("train/sat/" + sat)
             # print(map)
             print(str(l) + "/" + str(len(filenames_sat)) + ": " + str(_))
-            x, y = get_data_from_images(img_map, img_sat)
+            # x, y = get_data_from_images(img_map, img_sat)
+            x, y = get_random_base_data_from_images(img_map, img_sat)
             model.fit(x, y, epochs=1)
             # print(map)
             l += 1
