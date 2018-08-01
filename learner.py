@@ -62,7 +62,7 @@ def get_data_from_images(img_map, img_sat):
     y_train = np.zeros((len(slices_sat), 2))
 
     for i, (slice_map, slice_sat) in enumerate(zip(slices_map, slices_sat)):
-        if np.sum(slice_map >neural.THRESHOLD) >= 1:
+        if np.sum(slice_map > neural.THRESHOLD) >= 1:
             y_train[i] = neural.IS_ROAD
             x_train[i] = slice_sat
         else:
@@ -92,7 +92,7 @@ def get_random_base_data_from_images(img_map, img_sat):
 
     y_train = np.zeros((2 * min_len, 2))
     y_train[0: min_len] = neural.IS_ROAD
-    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
+    y_train[min_len: 2 * min_len] = neural.IS_NOT_ROAD
 
     return shuffle(x_train, y_train)
 
@@ -109,13 +109,6 @@ def get_specialized_data_from_images(img_map, img_sat):
         map_data = get_surroundings(img_map, x, y)
         sat_data = get_surroundings(img_sat, x, y)
 
-
-        ###############
-        # if check_road(x, y, img_map):
-        #     x_roads.append(sat_data)
-        # else:
-        #     x_no_roads.append(sat_data)
-
         if np.sum(map_data > neural.THRESHOLD) >= 1:
             for xx in range(x - 9, x + 11, 2):
                 for yy in range(y - 9, y + 11, 2):
@@ -127,7 +120,6 @@ def get_specialized_data_from_images(img_map, img_sat):
     min_len = len(x_no_roads) if (len(x_roads) >= len(x_no_roads)) else len(x_roads)
 
     if min_len == 0:
-        print("ojoj")
         if len(x_no_roads) >= 1:
             x_train = np.array([x_no_roads[0]])
             y_train = np.array([neural.IS_NOT_ROAD])
@@ -143,7 +135,7 @@ def get_specialized_data_from_images(img_map, img_sat):
 
     y_train = np.zeros((2 * min_len, 2))
     y_train[0: min_len] = neural.IS_ROAD
-    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
+    y_train[min_len: 2 * min_len] = neural.IS_NOT_ROAD
 
     return shuffle(x_train, y_train)
 
@@ -175,16 +167,16 @@ def get_specialized_small_data_from_images(img_map, img_sat):
 
     y_train = np.zeros((2 * min_len, 2))
     y_train[0: min_len] = neural.IS_ROAD
-    y_train[min_len: 2*min_len] = neural.IS_NOT_ROAD
+    y_train[min_len: 2 * min_len] = neural.IS_NOT_ROAD
 
     return shuffle(x_train, y_train)
 
 
 def check_road(x, y, img_mat):
     if img_mat[x][y] >= neural.THRESHOLD or \
-                    img_mat[x][y + 1] >= neural.THRESHOLD or \
-                    img_mat[x + 1][y] >= neural.THRESHOLD or \
-                    img_mat[x + 1][y + 1] >= neural.THRESHOLD:
+            img_mat[x][y + 1] >= neural.THRESHOLD or \
+            img_mat[x + 1][y] >= neural.THRESHOLD or \
+            img_mat[x + 1][y + 1] >= neural.THRESHOLD:
         return True
     else:
         return False

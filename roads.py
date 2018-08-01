@@ -19,7 +19,7 @@ def roads(image):
     img_sat_pad = np.pad(img_sat, pad_width=npad, mode="symmetric")
 
     predictions = model_base.predict(slice_sat_data)
-    predictions_mask = (predictions[:, 0] > predictions[:, 1])   # is a road, see neural constants
+    predictions_mask = (predictions[:, 0] > predictions[:, 1])  # is a road, see neural constants
 
     predictions = predictions[predictions_mask]
     x_data = x_data[predictions_mask]
