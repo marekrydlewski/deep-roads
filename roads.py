@@ -53,15 +53,15 @@ def roads(image):
     # result = morphology.binary_opening(result, selem=morphology.diamond(1))
 
     # result = morphology.dilation(result, morphology.diamond(1)).astype(np.uint8)
-    # result = morphology.remove_small_objects(result, min_size=20, connectivity=1)
+    result = morphology.remove_small_objects(result, min_size=15, connectivity=1)
 
     return misc.imresize(result, size=(1500, 1500))
 
 
 if __name__ == "__main__":
     # train
-    # img_map = learner.load_img("train/map/17278915_15.tif")
-    # img_sat = learner.load_img("train/sat/17278915_15.tiff")
+    #img_map = learner.load_img("train/map/10078750_15.tif")
+    #img_sat = learner.load_img("train/sat/10078750_15.tiff")
 
     # test
     img_map = learner.load_img("test/map/18328960_15.tif")
